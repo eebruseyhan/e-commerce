@@ -1,20 +1,27 @@
-import { useState, useEffect } from 'react';
-import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/authContext';
+import { CartProvider } from './context/cartContext';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Cart from './pages/Cart';
 
 function App() {
-  const [veri, setVeri] = useState("");
-
-  useEffect(() => {
-    fetch('http://localhost:5000/api/mesaj')
-      .then(res => res.json())
-      .then(data => setVeri(data.mesaj));
-  }, []);
-
   return (
-    <div>
-      <h1>React + Express Projesi</h1>
-      <p>Sunucudan gelen veri: {veri}</p>
-    </div>
+    <AuthProvider>
+      <CartProvider>
+        <BrowserRouter>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/cart" element={<Cart />} />
+          </Routes>
+        </BrowserRouter>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 
