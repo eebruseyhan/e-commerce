@@ -1,12 +1,9 @@
-const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const pool = require('../db');
 
-const router = express.Router();
-
-//kullanıcı kaydı
-router.post('/register', async (req, res) => {
+// kullanıcı kaydı
+const register = async (req, res) => {
     try {
         const { fullName, email, password } = req.body;
 
@@ -34,16 +31,14 @@ router.post('/register', async (req, res) => {
             message: "kullanıcı başarıyla kayıt oldu",
             user: newUser.rows[0]
         });
-    }
-    catch (err) {
+    } catch (err) {
         console.error(err.message);
         res.status(500).json({ message: "sunucu hatası" });
     }
-});
+};
 
-
-//kullanıcı girişi
-router.post('/login', async (req, res) => {
+// kullanıcı girişi
+const login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -83,11 +78,10 @@ router.post('/login', async (req, res) => {
                 email: user.user_mail,
             },
         });
-    }
-    catch (err) {
+    } catch (err) {
         console.error(err.message);
         res.status(500).json({ message: "sunucu hatası" });
     }
-});
+};
 
-module.exports = router;
+module.exports = { register, login };

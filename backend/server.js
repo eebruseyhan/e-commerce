@@ -7,9 +7,9 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/products', require('./routes/products'));
-app.use('/api/cart', require('./routes/cart'));
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/products', require('./routes/productsRoutes'));
+app.use('/api/cart', require('./routes/cartRoutes'));
 
 app.get('/', (req, res) => {
   res.send('API çalışıyor');
