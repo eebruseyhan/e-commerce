@@ -8,135 +8,139 @@ React + Node.js + PostgreSQL ile geliştirilmiş full-stack bir e-ticaret uygula
 
 ```
 e-comm/
-├── backend/     → Express + PostgreSQL API sunucusu
-└── frontend/    → React (Vite) istemci uygulaması
+├── backend/          → Express + PostgreSQL API sunucusu
+├── frontend/         → React (Vite) istemci uygulaması
+├── docker-compose.yml
+├── .env.example      → Ortam değişkenleri şablonu
+└── README.md
 ```
 
 ---
 
-## ⚙️ Gereksinimler
+## 🐳 Docker ile Çalıştırma (Önerilen)
+
+### Gereksinimler
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+### Adımlar
+
+```bash
+# 1. Repo'yu klonla
+git clone <repo-url>
+cd e-comm
+
+# 2. Ortam değişkenlerini oluştur
+cp .env.example .env
+# .env dosyasını açıp POSTGRES_PASSWORD ve JWT_SECRET değerlerini değiştir
+
+# 3. Container'ları build et ve başlat
+docker compose up --build -d
+
+# 4. Veritabanı tablolarını ve örnek verileri oluştur
+docker exec ecomm_backend node migrations/migrate.js
+```
+
+### Erişim
+
+| Servis | URL |
+|--------|-----|
+| 🌐 Frontend | http://localhost |
+| ⚙️ Backend API | http://localhost:5001 |
+
+### Faydalı Docker Komutları
+
+```bash
+# Logları takip et
+docker compose logs -f
+
+# Durdur
+docker compose down
+
+# Durdur + veritabanını sıfırla
+docker compose down -v
+```
+
+---
+
+## 💻 Yerel Geliştirme (Docker'sız)
+
+### Gereksinimler
 
 - [Node.js](https://nodejs.org/) v18+
 - [PostgreSQL](https://www.postgresql.org/) v14+
-- npm v9+
 
----
-
-## 🗄️ Veritabanı Kurulumu
-
-PostgreSQL'de aşağıdaki tabloları oluşturun:
-
-```sql
-CREATE TABLE app_users (
-    user_id          SERIAL PRIMARY KEY,
-    user_fullname    VARCHAR(100) NOT NULL,
-    user_mail        VARCHAR(100) UNIQUE NOT NULL,
-    user_hashpassword TEXT NOT NULL
-);
-
-CREATE TABLE products (
-    id           SERIAL PRIMARY KEY,
-    product_name VARCHAR(100) NOT NULL,
-    price        NUMERIC(10, 2) NOT NULL
-);
-```
-
----
-
-## 🔧 Backend Kurulumu
+### Backend
 
 ```bash
 cd backend
 npm install
+
+# .env dosyasını oluştur
+cp .env.example .env
+# DATABASE_URL, PORT ve JWT_SECRET değerlerini doldur
+
+# Veritabanı tablolarını oluştur
+npm run migrate
+
+# Geliştirme sunucusunu başlat
+npm run dev
 ```
 
-### Ortam Değişkenleri
+### Frontend
 
-`backend/.env` dosyası oluşturun:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### Erişim
+
+| Servis | URL |
+|--------|-----|
+| 🌐 Frontend | http://localhost:5173 |
+| ⚙️ Backend API | http://localhost:5001/api |
+
+---
+
+## ⚙️ Ortam Değişkenleri
+
+### Kök dizin (`.env`) — Docker için
 
 ```env
-PORT=5000
-DATABASE_URL=postgresql://kullanici:sifre@localhost:5432/veritabani_adi
-JWT_SECRET=gizli_anahtar_buraya
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=guclu_sifre_yaz
+POSTGRES_DB=ecomm
+JWT_SECRET=uzun_ve_rastgele_bir_kelime
 ```
 
-### Çalıştırma
+### `backend/.env` — Yerel geliştirme için
 
-```bash
-# Geliştirme (nodemon ile otomatik yeniden başlama)
-npm run dev
-
-# Prodüksiyon
-npm run start
+```env
+PORT=5001
+DATABASE_URL=postgresql://kullanici:sifre@localhost:5432/ecomm
+JWT_SECRET=uzun_ve_rastgele_bir_kelime
 ```
-
-### Backend Bağımlılıkları
-
-| Paket | Açıklama |
-|---|---|
-| `express` | HTTP sunucusu ve routing |
-| `cors` | Cross-origin isteklere izin verir |
-| `pg` | PostgreSQL veritabanı bağlantısı |
-| `bcrypt` | Şifre hashleme |
-| `jsonwebtoken` | JWT token oluşturma ve doğrulama |
-| `dotenv` | `.env` dosyasından ortam değişkeni okuma |
-| `nodemon` *(dev)* | Dosya değişikliklerinde sunucuyu otomatik yeniden başlatır |
-
----
-
-## 🎨 Frontend Kurulumu
-
-```bash
-cd frontend
-npm install
-```
-
-### Çalıştırma
-
-```bash
-# Geliştirme sunucusu
-npm run dev
-
-# Prodüksiyon build
-npm run build
-```
-
-### Frontend Bağımlılıkları
-
-| Paket | Açıklama |
-|---|---|
-| `react` | UI kütüphanesi |
-| `react-dom` | React'ı DOM'a bağlar |
-| `react-router-dom` | Sayfa yönlendirme |
-| `axios` | HTTP istekleri |
-
----
-
-## 🚀 Projeyi Ayağa Kaldırma (Hızlı Başlangıç)
-
-```bash
-# 1. Backend
-cd backend
-npm install
-# .env dosyasını oluştur (yukarıdaki örneğe göre)
-npm run dev
-
-# 2. Frontend (yeni terminal)
-cd frontend
-npm install
-npm run dev
-```
-
-Frontend: http://localhost:5173  
-Backend API: http://localhost:5000/api
 
 ---
 
 ## 📡 API Endpoint'leri
 
 | Method | Endpoint | Açıklama | Token Gerekli |
-|---|---|---|---|
+|--------|----------|----------|---------------|
 | POST | `/api/auth/register` | Yeni kullanıcı kaydı | ❌ |
 | POST | `/api/auth/login` | Giriş yap, JWT döner | ❌ |
 | GET | `/api/products` | Tüm ürünleri listele | ❌ |
 | POST | `/api/cart/add` | Sepete ürün ekle | ✅ |
+
+---
+
+## 🛠️ Teknoloji Yığını
+
+| Katman | Teknoloji |
+|--------|-----------|
+| Frontend | React 19, Vite, React Router, Axios |
+| Backend | Node.js, Express 5, JWT, bcrypt |
+| Veritabanı | PostgreSQL 16 |
+| Container | Docker, Docker Compose, Nginx |

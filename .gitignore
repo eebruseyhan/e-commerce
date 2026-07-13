@@ -1,0 +1,6 @@
+# Ortam değişkenleri — asla pushlanmamalı
+.env
+.env.local
+
+# Mac OS
+.DS_Store
