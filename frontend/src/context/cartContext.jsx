@@ -1,7 +1,9 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import api from '../api/axios';
 
 const CartContext = createContext();
 
+//sepeti sakla ve çıkar işlemleri global state yönetim
 export function CartProvider({ children }) {
     const [cart, setCart] = useState(() => {
         const saved = localStorage.getItem('cart');
@@ -12,7 +14,19 @@ export function CartProvider({ children }) {
         localStorage.setItem('cart', JSON.stringify(cart));
     }, [cart]);
 
-    const addToCart = (product) => {
+    // Token ile backend'e istek atar; giriş yapılmamışsa login'e yönlendirir
+    const addToCart = async (product) => {
+        try {
+            await api.post('/cart/add', { product });
+        } catch (err) {
+            if (err.response?.status === 401 || err.response?.status === 403) {
+                window.location.href = '/login';
+                return;
+            }
+            console.error('Sepete eklenirken hata:', err);
+            return;
+        }
+
         setCart((prev) => {
             const existing = prev.find((item) => item.id === product.id);
             if (existing) {

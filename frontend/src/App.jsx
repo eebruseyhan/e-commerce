@@ -2,10 +2,10 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/authContext';
 import { CartProvider } from './context/cartContext';
 import Navbar from './components/Navbar';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Cart from './pages/Cart';
+import Home from './pages/home';
+import Login from './pages/login';
+import Register from './pages/register';
+import Cart from './pages/cart';
 
 function App() {
   return (

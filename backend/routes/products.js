@@ -3,7 +3,7 @@ const pool = require('../db');
 
 const router = express.Router();
 
-// ürünleri listele
+//ürünleri listele
 router.get('/', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM products');

@@ -5,6 +5,7 @@ const pool = require('../db');
 
 const router = express.Router();
 
+//kullanıcı kaydı
 router.post('/register', async (req, res) => {
     try {
         const { fullName, email, password } = req.body;
@@ -41,6 +42,7 @@ router.post('/register', async (req, res) => {
 });
 
 
+//kullanıcı girişi
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
