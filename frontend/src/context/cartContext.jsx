@@ -14,7 +14,6 @@ export function CartProvider({ children }) {
         localStorage.setItem('cart', JSON.stringify(cart));
     }, [cart]);
 
-    // Token ile backend'e istek atar; giriş yapılmamışsa login'e yönlendirir
     const addToCart = async (product) => {
         try {
             await api.post('/cart/add', { product });
