@@ -106,22 +106,23 @@ npm run dev
 
 ## ⚙️ Ortam Değişkenleri
 
-### Kök dizin (`.env`) — Docker için
+Projenin kök dizinindeki tek `.env` dosyası hem Docker hem de yerel geliştirme için kullanılır.
 
 ```env
+# Veritabanı
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=guclu_sifre_yaz
 POSTGRES_DB=ecomm
-JWT_SECRET=uzun_ve_rastgele_bir_kelime
-```
 
-### `backend/.env` — Yerel geliştirme için
-
-```env
+# Backend
 PORT=5001
-DATABASE_URL=postgresql://kullanici:sifre@localhost:5432/ecomm
-JWT_SECRET=uzun_ve_rastgele_bir_kelime
+DATABASE_URL=postgresql://postgres:guclu_sifre_yaz@localhost:5432/ecomm
+
+# Güvenlik
+JWT_SECRET=uzun_ve_rastgele_bir_kelime_yaz
 ```
+
+> **Not:** Yerel geliştirmede `DATABASE_URL`'deki host `localhost`, Docker'da bu değer otomatik olarak `db` container'ını gösterir (docker-compose bunu halleder).
 
 ---
 
