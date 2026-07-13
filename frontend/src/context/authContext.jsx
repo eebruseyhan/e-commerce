@@ -3,6 +3,7 @@ import api from '../api/axios';
 
 const AuthContext = createContext();
 
+//giriş yapma,kayıt olma ve çıkış global state yönetim
 export function AuthProvider({ children }) {
     const [token, setToken] = useState(() => localStorage.getItem('token'));
     const [user, setUser] = useState(() => {
