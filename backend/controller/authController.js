@@ -63,6 +63,7 @@ const login = async (req, res) => {
             return res.status(401).json({ message: "geçersiz email veya şifre" });
         }
 
+        // jwt oluştur
         const token = jwt.sign(
             { userId: user.user_id, email: user.user_mail },
             process.env.JWT_SECRET,
